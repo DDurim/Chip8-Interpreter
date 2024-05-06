@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include <Chip8.hpp>
+#include "../lib/Chip8.hpp"
 
 int main()
 {

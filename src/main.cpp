@@ -6,7 +6,7 @@ int main()
     sf::RenderWindow lWindow(sf::VideoMode(1280, 640), "Chip8 Emulator", sf::Style::Default);
 
     Chip8 Chip8{};
-    Chip8.LoadRom("");
+    Chip8.LoadRom( "" );
 
     sf::Texture lTexture;
     lTexture.create(64, 32);

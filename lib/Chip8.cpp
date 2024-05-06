@@ -1,4 +1,4 @@
-#include "Chip8.hpp"
+#include "../lib/Chip8.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -302,14 +302,14 @@ void Chip8::OP_00EE()
 
 void Chip8::OP_1NNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu };
+	const uint16_t lAddress = mOpcode & 0x0FFFu;
 
 	mProgramCounter = lAddress;
 }
 
 void Chip8::OP_2NNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu };
+	const uint16_t lAddress = mOpcode & 0x0FFFu;
 
 	mStack[mStackPointer] = mProgramCounter;
 	mStackPointer++;
@@ -319,8 +319,8 @@ void Chip8::OP_2NNN()
 
 void Chip8::OP_3XNN()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lValue{ (mOpcode & 0x00FFu) };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lValue = (mOpcode & 0x00FFu);
 
 	if (mRegisters[lRegisterX] == lValue)
 	{
@@ -330,8 +330,8 @@ void Chip8::OP_3XNN()
 
 void Chip8::OP_4XNN()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lValue{ (mOpcode & 0x00FFu) };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lValue = (mOpcode & 0x00FFu);
 
 	if (mRegisters[lRegisterX] != lValue)
 	{
@@ -341,8 +341,8 @@ void Chip8::OP_4XNN()
 
 void Chip8::OP_5XY0()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	if (mRegisters[lRegisterX] == mRegisters[lRegisterY])
 	{
@@ -352,32 +352,32 @@ void Chip8::OP_5XY0()
 
 void Chip8::OP_6XNN()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lValue{ (mOpcode & 0x00FFu) };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lValue = (mOpcode & 0x00FFu);
 
 	mRegisters[lRegisterX] = lValue;
 }
 
 void Chip8::OP_7XNN()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lValue{ mOpcode & 0x00FFu };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lValue = mOpcode & 0x00FFu;
 
 	mRegisters[lRegisterX] += lValue;
 }
 
 void Chip8::OP_8XY0()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	mRegisters[lRegisterX] = mRegisters[lRegisterY];
 }
 
 void Chip8::OP_8XY1()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	mRegisters[lRegisterX] |= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
@@ -385,8 +385,8 @@ void Chip8::OP_8XY1()
 
 void Chip8::OP_8XY2()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	mRegisters[lRegisterX] &= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
@@ -395,8 +395,8 @@ void Chip8::OP_8XY2()
 void Chip8::OP_8XY3()
 {
 
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	mRegisters[lRegisterX] ^= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
@@ -404,8 +404,8 @@ void Chip8::OP_8XY3()
 
 void Chip8::OP_8XY4()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	uint8_t lFlag{};
 
@@ -425,8 +425,8 @@ void Chip8::OP_8XY4()
 
 void Chip8::OP_8XY5()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	uint8_t lFlag{};
 
@@ -444,8 +444,8 @@ void Chip8::OP_8XY5()
 
 void Chip8::OP_8XY6()
 {
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 	uint8_t lFlag{};
 
 	mRegisters[lRegisterX] = mRegisters[lRegisterY];
@@ -464,8 +464,8 @@ void Chip8::OP_8XY6()
 
 void Chip8::OP_8XY7()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	uint8_t lFlag{};
 
@@ -483,8 +483,8 @@ void Chip8::OP_8XY7()
 
 void Chip8::OP_8XYE()
 {
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 	uint8_t lFlag{};
 
 	mRegisters[lRegisterX] = mRegisters[lRegisterY];
@@ -498,8 +498,8 @@ void Chip8::OP_8XYE()
 
 void Chip8::OP_9XY0()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
 	if (mRegisters[lRegisterX] != mRegisters[lRegisterY])
 	{
@@ -509,48 +509,48 @@ void Chip8::OP_9XY0()
 
 void Chip8::OP_ANNN()
 {
-	const uint16_t lValue{ mOpcode & 0x0FFFu };
+	const uint16_t lValue = mOpcode & 0x0FFFu;
 
 	mIndexRegister = lValue;
 }
 
 void Chip8::OP_BNNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu };
+	const uint16_t lAddress = mOpcode & 0x0FFFu;
 
 	mProgramCounter = lAddress + mRegisters[0];
 }
 
 void Chip8::OP_CXKK()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lValue{ mOpcode & 0x00FFu };
-	const uint8_t lRandom{ static_cast<uint8_t>(distrib(gen)) };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lValue = mOpcode & 0x00FFu;
+	const uint8_t lRandom = static_cast<uint8_t>(distrib(gen));
 
 	mRegisters[lRegisterX] = lRandom & lValue;
 }
 
 void Chip8::OP_DXYN()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lRegisterY{ (mOpcode & 0x00F0u) >> 4u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterY = (mOpcode & 0x00F0u) >> 4u;
 
-	const uint8_t lHeight{ mOpcode & 0x000Fu };
-	const uint8_t lWidth{ 8u };
+	const uint8_t lHeight = mOpcode & 0x000Fu;
+	const uint8_t lWidth = 8u;
 
-	const uint8_t lX{ mRegisters[lRegisterX] % 64u };
-	const uint8_t lY{ mRegisters[lRegisterY] % 32u };
+	const uint8_t lX = mRegisters[lRegisterX] % 64u;
+	const uint8_t lY = mRegisters[lRegisterY] % 32u;
 
 	mRegisters[0xF] = 0;
 
 	for (uint8_t lByte{}; lByte != lHeight; ++lByte)
 	{
-		const uint8_t lSpriteByte{ mMemory[mIndexRegister + lByte] };
+		const uint8_t lSpriteByte = mMemory[mIndexRegister + lByte];
 
 		for (uint8_t lBit{}; lBit != lWidth; ++lBit)
 		{
-			const uint8_t lSpritePixel{ lSpriteByte & (0x80u >> lBit) };
-			uint8_t* lScreenPixel{ &mVideo[(lY + lByte) * 64u + (lX + lBit)] };
+			const uint8_t lSpritePixel = lSpriteByte & (0x80u >> lBit);
+			uint8_t* lScreenPixel = &mVideo[(lY + lByte) * 64u + (lX + lBit)];
 
 			if (lX + lBit < 64 && lY + lByte < 32)
 			{
@@ -570,7 +570,7 @@ void Chip8::OP_DXYN()
 
 void Chip8::OP_EX9E()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	if (mKeypad[mRegisters[lRegisterX]])
 	{
@@ -580,7 +580,7 @@ void Chip8::OP_EX9E()
 
 void Chip8::OP_EXA1()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	if (!mKeypad[mRegisters[lRegisterX]])
 	{
@@ -590,14 +590,14 @@ void Chip8::OP_EXA1()
 
 void Chip8::OP_Fx07()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	mRegisters[lRegisterX] = mDelayTimer;
 }
 
 void Chip8::OP_FX0A()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	if (mKeypad[0])
 	{
@@ -671,30 +671,30 @@ void Chip8::OP_FX0A()
 
 void Chip8::OP_FX15()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	mDelayTimer = mRegisters[lRegisterX];
 }
 
 void Chip8::OP_FX1E()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	mIndexRegister += mRegisters[lRegisterX];
 }
 
 void Chip8::OP_FX29()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	const uint8_t lDigit{ mRegisters[lRegisterX] };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lDigit = mRegisters[lRegisterX];
 
 	mIndexRegister = 0x0050u + (5 * lDigit);
 }
 
 void Chip8::OP_FX33()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
-	uint8_t lDigit{ mRegisters[lRegisterX] };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	uint8_t lDigit = mRegisters[lRegisterX];
 
 	mMemory[mIndexRegister + 2] = lDigit % 10;
 	lDigit /= 10;
@@ -708,7 +708,7 @@ void Chip8::OP_FX33()
 
 void Chip8::OP_FX55()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	for (uint8_t a{}; a != (lRegisterX + 1); ++a)
 	{
@@ -720,7 +720,7 @@ void Chip8::OP_FX55()
 
 void Chip8::OP_FX65()
 {
-	const uint8_t lRegisterX{ (mOpcode & 0x0F00u) >> 8u };
+	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
 
 	for (uint8_t a{}; a != (lRegisterX + 1); ++a)
 	{

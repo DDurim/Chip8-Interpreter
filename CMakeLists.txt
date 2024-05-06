@@ -10,7 +10,9 @@ FetchContent_Declare(SFML
     GIT_TAG 2.6.x)
 FetchContent_MakeAvailable(SFML)
 
-add_executable(Chip8-Interpreter src/main.cpp)
+include_directories(${CMAKE_SOURCE_DIR}/lib)
+
+add_executable(Chip8-Interpreter src/Main.cpp lib/Chip8.cpp)
 target_link_libraries(Chip8-Interpreter PRIVATE sfml-graphics)
 target_compile_features(Chip8-Interpreter PRIVATE cxx_std_17)
 

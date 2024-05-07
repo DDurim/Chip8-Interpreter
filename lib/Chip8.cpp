@@ -685,7 +685,7 @@ void Chip8::OP_FX1E()
 
 void Chip8::OP_FX29()
 {
-	const uint8_t lRegisterX = (mOpcode & 0x0F00u) >> 8u;
+	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 	const uint8_t lDigit = mRegisters[lRegisterX];
 
 	mIndexRegister = 0x0050u + (5 * lDigit);

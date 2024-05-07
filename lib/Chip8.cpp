@@ -309,7 +309,7 @@ void Chip8::OP_1NNN()
 
 void Chip8::OP_2NNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu };
+	const uint16_t lAddress{ uint16_t(mOpcode & 0x0FFFu)};
 
 	mStack[mStackPointer] = mProgramCounter;
 	mStackPointer++;
@@ -508,14 +508,14 @@ void Chip8::OP_9XY0()
 
 void Chip8::OP_ANNN()
 {
-	const uint16_t lValue{ mOpcode & 0x0FFFu };
+	const uint16_t lValue{ uint16_t(mOpcode & 0x0FFFu) };
 
 	mIndexRegister = lValue;
 }
 
 void Chip8::OP_BNNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu};
+	const uint16_t lAddress{ uint16_t(mOpcode & 0x0FFFu)};
 
 	mProgramCounter = lAddress + mRegisters[0];
 }
@@ -537,18 +537,18 @@ void Chip8::OP_DXYN()
 	const uint8_t lHeight{ uint8_t(mOpcode & 0x000Fu) };
 	const uint8_t lWidth{ 8u };
 
-	const uint8_t lX{ mRegisters[lRegisterX] % 64u };
-	const uint8_t lY{ mRegisters[lRegisterY] % 32u };
+	const uint8_t lX{ uint8_t(mRegisters[lRegisterX] % 64u) };
+	const uint8_t lY{ uint8_t(mRegisters[lRegisterY] % 32u)};
 
 	mRegisters[0xF] = 0;
 
 	for (uint8_t lByte{}; lByte != lHeight; ++lByte)
 	{
-		const uint8_t lSpriteByte{ mMemory[mIndexRegister + lByte] };
+		const uint8_t lSpriteByte{ uint8_t(mMemory[mIndexRegister + lByte]) };
 
 		for (uint8_t lBit{}; lBit != lWidth; ++lBit)
 		{
-			const uint8_t lSpritePixel{ lSpriteByte & (0x80u >> lBit) };
+			const uint8_t lSpritePixel{ uint8_t(lSpriteByte & (0x80u >> lBit)) };
 			uint8_t* lScreenPixel{ &mVideo[(lY + lByte) * 64u + (lX + lBit)] };
 
 			if (lX + lBit < 64 && lY + lByte < 32)

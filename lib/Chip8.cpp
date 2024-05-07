@@ -302,7 +302,7 @@ void Chip8::OP_00EE()
 
 void Chip8::OP_1NNN()
 {
-	const uint16_t lAddress{ mOpcode & 0x0FFFu };
+	const uint16_t lAddress{ uint16_t(mOpcode & 0x0FFFu) };
 
 	mProgramCounter = lAddress;
 }

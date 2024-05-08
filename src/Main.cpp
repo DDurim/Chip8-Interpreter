@@ -102,6 +102,9 @@ int main() {
 				case sf::Keyboard::V: {
 					Chip8.getKeypad()[15] = 1;
 				} break;
+
+				default:
+					break;
 				}
 
 			} break;
@@ -171,6 +174,9 @@ int main() {
 				case sf::Keyboard::V: {
 					Chip8.getKeypad()[15] = 0;
 				} break;
+
+				default:
+					break;
 				}
 			} break;
 

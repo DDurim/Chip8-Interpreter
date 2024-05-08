@@ -2,12 +2,9 @@
 #define _CHIP8_HPP_
 
 #include <cstdint>
-#include <chrono>
 
-class Chip8
-{
+class Chip8 {
 private:
-
 	uint8_t mRegisters[16]{};
 	uint8_t mMemory[4096]{};
 	uint8_t mVideo[32 * 64]{};
@@ -23,26 +20,18 @@ private:
 	uint8_t mStackPointer{};
 
 public:
-
 	Chip8();
 	Chip8(const char* const);
 
 	void LoadRom(const char* const);
 	void EmulateCycle();
 
-	uint8_t* getRegisters();
-	uint8_t* getMemory();
-	uint8_t* getVideo();
-	uint8_t* getKeypad();
+	
+	uint8_t *const getVideo();
+	uint8_t *const getKeypad();
 
-	uint8_t* getDelayTimer();
-
-	uint16_t getProgramCounter();
-	uint16_t getIndexRegister();
-	uint16_t getOpcode();
-
-	uint16_t* getStack();
-	uint8_t getStackPointer();
+	uint8_t getDelayTimer();
+	void setDelayTimer(const uint8_t iDelayTimer);
 
 	void OP_00E0();
 	void OP_00EE();
@@ -77,7 +66,6 @@ public:
 	void OP_FX33();
 	void OP_FX55();
 	void OP_FX65();
-
 };
 
 #endif

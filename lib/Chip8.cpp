@@ -27,7 +27,19 @@ uint8_t lFontset[80]{
 	0xF0, 0x80, 0xF0, 0x80, 0x80   // F
 };
 
+void OpSuccess(const std::string& lOpcodeName)
+{
+	std::cout << "(\x1B[32mSuccess\033[0m) (" << lOpcodeName << ") Executed" << std::endl;
+}
+
+void OpError()
+{
+	std::cout << "(\x1B[31mError\033[0m) Opcode Not Executed" << std::endl;
+}
+
+
 Chip8::Chip8() : mProgramCounter{ 0x200 } {
+
 	for (uint8_t a{}; a != 80; ++a) {
 		mMemory[0x50 + a] = lFontset[a];
 	}
@@ -35,24 +47,30 @@ Chip8::Chip8() : mProgramCounter{ 0x200 } {
 
 Chip8::Chip8(const char* const iSource) : Chip8() { LoadRom(iSource); }
 
-void Chip8::LoadRom(const char* const iSource) {
+bool Chip8::LoadRom(const char* const iSource) {
 
 	std::ifstream lSource(iSource, std::ios::binary | std::ios::ate);
 
 	if (lSource.is_open()) {
-		std::cout << "File Opened" << std::endl;
+
+		std::cout << "(\x1B[32mSuccess\033[0m) File Opened" << std::endl;
 
 		std::streampos lSize{ lSource.tellg() };
 
 		if (lSize < 3584) {
+
 			lSource.seekg(0, std::ios::beg);
 			lSource.read(reinterpret_cast<char*>(&mMemory[0x200]), lSize);
-			lSource.close();
+			std::cout << "(\x1B[32mSuccess\033[0m) Source Code Loaded" << std::endl;
 
-			std::cout << "Succesfully Loaded" << std::endl;
+			lSource.close();
+			std::cout << "(\x1B[32mSuccess\033[0m) File Closed" << std::endl;
+
+			return true;
 		}
 		else {
-			std::cout << "Too Big" << std::endl;
+			std::cout << "(\x1B[31mError\033[0m) File Not Opened" << std::endl;
+			return false;
 		}
 	}
 }
@@ -63,157 +81,206 @@ void Chip8::EmulateCycle() {
 	mProgramCounter += 2u;
 
 	switch (mOpcode & 0xF000u) {
-	case 0x0000: {
-		switch (mOpcode & 0x000Fu) {
-		case 0x0000:
+
+	case 0x0000u: {
+
+		switch (mOpcode & 0x0FFFu) {
+
+		case 0x00E0u:
 			OP_00E0();
 			break;
 
-		case 0x000E:
+		case 0x00EEu:
 			OP_00EE();
+			break;
+
+		default:
+			OpError();
 			break;
 		}
 	} break;
 
-	case 0x1000:
+	case 0x1000u:
 		OP_1NNN();
 		break;
 
-	case 0x2000:
+	case 0x2000u:
 		OP_2NNN();
 		break;
 
-	case 0x3000:
+	case 0x3000u:
 		OP_3XNN();
 		break;
 
-	case 0x4000:
+	case 0x4000u:
 		OP_4XNN();
 		break;
 
-	case 0x5000:
-		OP_5XY0();
-		break;
+	case 0x5000u: {
 
-	case 0x6000:
+		switch (mOpcode & 0x000Fu) {
+
+		case 0x0000u:
+			OP_5XY0();
+			break;
+
+		default:
+			OpError();
+			break;
+		}
+	}break;
+
+	case 0x6000u:
 		OP_6XNN();
 		break;
 
-	case 0x7000:
+	case 0x7000u:
 		OP_7XNN();
 		break;
 
-	case 0x8000: {
+	case 0x8000u: {
+
 		switch (mOpcode & 0x000Fu) {
-		case 0x0000:
+
+		case 0x0000u:
 			OP_8XY0();
 			break;
 
-		case 0x0001:
+		case 0x0001u:
 			OP_8XY1();
 			break;
 
-		case 0x0002:
+		case 0x0002u:
 			OP_8XY2();
 			break;
 
-		case 0x0003:
+		case 0x0003u:
 			OP_8XY3();
 			break;
 
-		case 0x0004:
+		case 0x0004u:
 			OP_8XY4();
 			break;
 
-		case 0x0005:
+		case 0x0005u:
 			OP_8XY5();
 			break;
 
-		case 0x0006:
+		case 0x0006u:
 			OP_8XY6();
 			break;
 
-		case 0x0007:
+		case 0x0007u:
 			OP_8XY7();
 			break;
 
-		case 0x000E:
+		case 0x000Eu:
 			OP_8XYE();
+			break;
+
+		default:
+			OpError();
 			break;
 		}
 	} break;
 
-	case 0x9000:
-		OP_9XY0();
-		break;
+	case 0x9000u: {
 
-	case 0xA000:
+		switch (mOpcode & 0x000Fu)
+		{
+		case 0x0000u:
+			OP_9XY0();
+			break;
+
+		default:
+			OpError();
+			break;
+		}
+	}break;
+
+	case 0xA000u:
 		OP_ANNN();
 		break;
 
-	case 0xB000:
+	case 0xB000u:
 		OP_BNNN();
 		break;
 
-	case 0xC000:
+	case 0xC000u:
 		OP_CXKK();
 		break;
 
-	case 0xD000:
+	case 0xD000u:
 		OP_DXYN();
 		break;
 
-	case 0xE000: {
+	case 0xE000u: {
+
 		switch (mOpcode & 0x00FFu) {
-		case 0x00A1:
+
+		case 0x00A1u:
 			OP_EXA1();
 			break;
 
-		case 0x009E:
+		case 0x009Eu:
 			OP_EX9E();
+			break;
+
+		default:
+			OpError();
 			break;
 		}
 	} break;
 
-	case 0xF000: {
+	case 0xF000u: {
+
 		switch (mOpcode & 0x00FFu) {
-		case 0x0007:
-			OP_Fx07();
+
+		case 0x0007u:
+			OP_FX07();
 			break;
 
-		case 0x000A:
+		case 0x000Au:
 			OP_FX0A();
 			break;
 
-		case 0x0015:
+		case 0x0015u:
 			OP_FX15();
 			break;
 
-		case 0x001E:
+		case 0x001Eu:
 			OP_FX1E();
 			break;
 
-		case 0x0029:
+		case 0x0029u:
 			OP_FX29();
 			break;
 
-		case 0x0033:
+		case 0x0033u:
 			OP_FX33();
 			break;
 
-		case 0x0055:
+		case 0x0055u:
 			OP_FX55();
 			break;
 
-		case 0x0065:
+		case 0x0065u:
 			OP_FX65();
 			break;
+
+		default:
+			OpError();
+			break;
 		}
+
 	} break;
+
+
+	default:
+		OpError();
+		break;
 	}
 }
-
-
 
 uint8_t* const Chip8::getVideo() { return mVideo; }
 uint8_t* const Chip8::getKeypad() { return mKeypad; }
@@ -224,18 +291,21 @@ void Chip8::setDelayTimer(uint8_t iDelayTimer)
 	mDelayTimer = iDelayTimer;
 }
 
-
 void Chip8::OP_00E0() {
 
 	for (int a{}; a != 32 * 64; ++a) {
 		mVideo[a] = 0;
 	}
+
+	OpSuccess("00E0");
 }
 
 void Chip8::OP_00EE() {
 
 	mStackPointer--;
 	mProgramCounter = mStack[mStackPointer];
+
+	OpSuccess("00EE");
 }
 
 void Chip8::OP_1NNN() {
@@ -243,6 +313,8 @@ void Chip8::OP_1NNN() {
 	const uint16_t lAddress{ uint16_t(mOpcode & 0x0FFFu) };
 
 	mProgramCounter = lAddress;
+
+	OpSuccess("1NNN");
 }
 
 void Chip8::OP_2NNN() {
@@ -253,6 +325,8 @@ void Chip8::OP_2NNN() {
 	mStackPointer++;
 
 	mProgramCounter = lAddress;
+
+	OpSuccess("2NNN");
 }
 
 void Chip8::OP_3XNN() {
@@ -263,6 +337,8 @@ void Chip8::OP_3XNN() {
 	if (mRegisters[lRegisterX] == lValue) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("3XNN");
 }
 
 void Chip8::OP_4XNN() {
@@ -273,6 +349,8 @@ void Chip8::OP_4XNN() {
 	if (mRegisters[lRegisterX] != lValue) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("4XNN");
 }
 
 void Chip8::OP_5XY0() {
@@ -283,6 +361,8 @@ void Chip8::OP_5XY0() {
 	if (mRegisters[lRegisterX] == mRegisters[lRegisterY]) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("5XY0");
 }
 
 void Chip8::OP_6XNN() {
@@ -291,6 +371,8 @@ void Chip8::OP_6XNN() {
 	const uint8_t lValue{ uint8_t((mOpcode & 0x00FFu)) };
 
 	mRegisters[lRegisterX] = lValue;
+
+	OpSuccess("6XNN");
 }
 
 void Chip8::OP_7XNN() {
@@ -299,6 +381,8 @@ void Chip8::OP_7XNN() {
 	const uint8_t lValue{ uint8_t(mOpcode & 0x00FFu) };
 
 	mRegisters[lRegisterX] += lValue;
+
+	OpSuccess("7XNN");
 }
 
 void Chip8::OP_8XY0() {
@@ -307,6 +391,8 @@ void Chip8::OP_8XY0() {
 	const uint8_t lRegisterY{ uint8_t((mOpcode & 0x00F0u) >> 4u) };
 
 	mRegisters[lRegisterX] = mRegisters[lRegisterY];
+
+	OpSuccess("8XY0");
 }
 
 void Chip8::OP_8XY1() {
@@ -316,6 +402,8 @@ void Chip8::OP_8XY1() {
 
 	mRegisters[lRegisterX] |= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
+
+	OpSuccess("8XY1");
 }
 
 void Chip8::OP_8XY2() {
@@ -325,6 +413,8 @@ void Chip8::OP_8XY2() {
 
 	mRegisters[lRegisterX] &= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
+
+	OpSuccess("8XY2");
 }
 
 void Chip8::OP_8XY3() {
@@ -334,6 +424,8 @@ void Chip8::OP_8XY3() {
 
 	mRegisters[lRegisterX] ^= mRegisters[lRegisterY];
 	mRegisters[0xFu] = 0;
+
+	OpSuccess("8XY3");
 }
 
 void Chip8::OP_8XY4() {
@@ -353,6 +445,8 @@ void Chip8::OP_8XY4() {
 
 	mRegisters[lRegisterX] = lSum & 0xFFu;
 	mRegisters[0xFu] = lFlag;
+
+	OpSuccess("8XY4");
 }
 
 void Chip8::OP_8XY5() {
@@ -371,6 +465,8 @@ void Chip8::OP_8XY5() {
 
 	mRegisters[lRegisterX] -= mRegisters[lRegisterY];
 	mRegisters[0xFu] = lFlag;
+
+	OpSuccess("8XY5");
 }
 
 void Chip8::OP_8XY6() {
@@ -390,6 +486,8 @@ void Chip8::OP_8XY6() {
 
 	mRegisters[lRegisterX] >>= 1;
 	mRegisters[0xFu] = lFlag;
+
+	OpSuccess("8XY6");
 }
 
 void Chip8::OP_8XY7() {
@@ -408,6 +506,8 @@ void Chip8::OP_8XY7() {
 
 	mRegisters[lRegisterX] = mRegisters[lRegisterY] - mRegisters[lRegisterX];
 	mRegisters[0xFu] = lFlag;
+
+	OpSuccess("8XY7");
 }
 
 void Chip8::OP_8XYE() {
@@ -422,6 +522,8 @@ void Chip8::OP_8XYE() {
 
 	mRegisters[lRegisterX] <<= 1;
 	mRegisters[0xFu] = lFlag;
+
+	OpSuccess("8XYE");
 }
 
 void Chip8::OP_9XY0() {
@@ -432,6 +534,8 @@ void Chip8::OP_9XY0() {
 	if (mRegisters[lRegisterX] != mRegisters[lRegisterY]) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("9XY0");
 }
 
 void Chip8::OP_ANNN() {
@@ -439,6 +543,8 @@ void Chip8::OP_ANNN() {
 	const uint16_t lValue{ uint16_t(mOpcode & 0x0FFFu) };
 
 	mIndexRegister = lValue;
+
+	OpSuccess("ANNN");
 }
 
 void Chip8::OP_BNNN() {
@@ -446,6 +552,8 @@ void Chip8::OP_BNNN() {
 	const uint16_t lAddress{ uint16_t(mOpcode & 0x0FFFu) };
 
 	mProgramCounter = lAddress + mRegisters[0];
+
+	OpSuccess("BNNN");
 }
 
 void Chip8::OP_CXKK() {
@@ -455,6 +563,8 @@ void Chip8::OP_CXKK() {
 	const uint8_t lRandom{ uint8_t(distrib(gen)) };
 
 	mRegisters[lRegisterX] = lRandom & lValue;
+
+	OpSuccess("CXKK");
 }
 
 void Chip8::OP_DXYN() {
@@ -490,31 +600,39 @@ void Chip8::OP_DXYN() {
 			}
 		}
 	}
+
+	OpSuccess("DXYN");
 }
 
 void Chip8::OP_EX9E() {
 
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 
-	if (mKeypad[mRegisters[lRegisterX]]) {
+	if (mKeypad[mRegisters[lRegisterX] & 0x0Fu]) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("EX9E");
 }
 
 void Chip8::OP_EXA1() {
 
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 
-	if (!mKeypad[mRegisters[lRegisterX]]) {
+	if (!mKeypad[mRegisters[lRegisterX] & 0x0Fu]) {
 		mProgramCounter += 2;
 	}
+
+	OpSuccess("EXA1");
 }
 
-void Chip8::OP_Fx07() {
+void Chip8::OP_FX07() {
 
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 
 	mRegisters[lRegisterX] = mDelayTimer;
+
+	OpSuccess("FX07");
 }
 
 void Chip8::OP_FX0A() {
@@ -527,7 +645,7 @@ void Chip8::OP_FX0A() {
 		for (int a{}; a != 16; ++a)
 		{
 			if (mKeypad[a]) {
-				Pressed = a;
+				Pressed = (a + 1);
 				break;
 			}
 		}
@@ -546,7 +664,7 @@ void Chip8::OP_FX0A() {
 		}
 	}
 
-
+	OpSuccess("FX0A");
 }
 
 void Chip8::OP_FX15() {
@@ -554,6 +672,8 @@ void Chip8::OP_FX15() {
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 
 	mDelayTimer = mRegisters[lRegisterX];
+
+	OpSuccess("FX15");
 }
 
 void Chip8::OP_FX1E() {
@@ -561,14 +681,18 @@ void Chip8::OP_FX1E() {
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
 
 	mIndexRegister += mRegisters[lRegisterX];
+
+	OpSuccess("FX1E");
 }
 
 void Chip8::OP_FX29() {
 
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
-	const uint8_t lDigit{ mRegisters[lRegisterX] };
+	const uint8_t lDigit{ mRegisters[lRegisterX] & 0x0Fu };
 
-	mIndexRegister = 0x0050u + (5 * lDigit);
+	mIndexRegister = 0x0050u + (5u * lDigit);
+
+	OpSuccess("FX29");
 }
 
 void Chip8::OP_FX33() {
@@ -584,6 +708,8 @@ void Chip8::OP_FX33() {
 
 	mMemory[mIndexRegister] = lDigit % 10;
 	lDigit /= 10;
+
+	OpSuccess("FX33");
 }
 
 void Chip8::OP_FX55() {
@@ -595,6 +721,8 @@ void Chip8::OP_FX55() {
 	}
 
 	mIndexRegister++;
+
+	OpSuccess("FX55");
 }
 
 void Chip8::OP_FX65() {
@@ -606,4 +734,6 @@ void Chip8::OP_FX65() {
 	}
 
 	mIndexRegister++;
+
+	OpSuccess("FX65");
 }

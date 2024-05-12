@@ -7,7 +7,7 @@ class Chip8 {
 private:
 	uint8_t mRegisters[16]{};
 	uint8_t mMemory[4096]{};
-	uint8_t mVideo[32 * 64]{};
+	uint8_t mVideo[32*64]{};
 	uint8_t mKeypad[16]{};
 
 	uint8_t mDelayTimer{};
@@ -23,12 +23,12 @@ public:
 	Chip8();
 	Chip8(const char* const);
 
-	void LoadRom(const char* const);
+	bool LoadRom(const char* const);
 	void EmulateCycle();
 
-	
-	uint8_t *const getVideo();
-	uint8_t *const getKeypad();
+
+	uint8_t* const getVideo();
+	uint8_t* const getKeypad();
 
 	uint8_t getDelayTimer();
 	void setDelayTimer(const uint8_t iDelayTimer);
@@ -58,7 +58,7 @@ public:
 	void OP_DXYN();
 	void OP_EX9E();
 	void OP_EXA1();
-	void OP_Fx07();
+	void OP_FX07();
 	void OP_FX0A();
 	void OP_FX15();
 	void OP_FX1E();

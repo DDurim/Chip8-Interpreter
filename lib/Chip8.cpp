@@ -73,6 +73,9 @@ bool Chip8::LoadRom(const char* const iSource) {
 			return false;
 		}
 	}
+
+	return false;
+
 }
 
 void Chip8::EmulateCycle() {
@@ -688,7 +691,7 @@ void Chip8::OP_FX1E() {
 void Chip8::OP_FX29() {
 
 	const uint8_t lRegisterX{ uint8_t((mOpcode & 0x0F00u) >> 8u) };
-	const uint8_t lDigit{ mRegisters[lRegisterX] & 0x0Fu };
+	const uint8_t lDigit{ uint8_t(mRegisters[lRegisterX] & 0x0Fu) };
 
 	mIndexRegister = 0x0050u + (5u * lDigit);
 
